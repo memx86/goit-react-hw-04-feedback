@@ -12,6 +12,7 @@ function Section({ type = "section", title, children }) {
 
 Section.propTypes = {
   type: PropTypes.string,
+  title: PropTypes.string,
   children: PropTypes.node.isRequired,
 };
 

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import s from "./Controls.module.css";
 
 function Controls({ options, onClick }) {
@@ -17,5 +18,9 @@ function Controls({ options, onClick }) {
     </div>
   );
 }
+Controls.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onClick: PropTypes.func.isRequired,
+};
 
 export default Controls;

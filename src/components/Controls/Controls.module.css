@@ -1,0 +1,14 @@
+.controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+.button {
+  padding: 1rem;
+  min-width: 75px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  background-color: #ccc;
+  cursor: pointer;
+}

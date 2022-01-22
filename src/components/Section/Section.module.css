@@ -1,0 +1,12 @@
+.section {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #eee;
+}
+.statistics {
+  composes: section;
+  background-color: #ddd;
+}
+.title {
+  padding: 1rem 0;
+}

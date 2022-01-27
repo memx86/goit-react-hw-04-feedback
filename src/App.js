@@ -1,27 +1,34 @@
-import { Component, Fragment } from "react";
+import { Fragment, useState } from "react";
 import Section from "components/Section";
 import Controls from "components/Controls";
 import Statistics from "components/Statistics";
 import Notification from "components/Notification";
 
-class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+function App() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const changeState = (e) => {
+    const key = e.target.dataset.value;
+    switch (key) {
+      case "good":
+        setGood(good + 1);
+        return;
+      case "neutral":
+        setNeutral(neutral + 1);
+        return;
+      case "bad":
+        setBad(bad + 1);
+        return;
+      default:
+        return;
+    }
   };
 
-  changeState = (e) =>
-    this.setState((prevState) => {
-      return {
-        ...prevState,
-        [e.target.dataset.value]: prevState[e.target.dataset.value] + 1,
-      };
-    });
-
-  makeExtendedStats = (stats) => {
-    const total = this.countTotalFeedback(stats);
-    const percentGood = this.countPositiveFeedbackPercentage(stats, total);
+  const makeExtendedStats = (stats) => {
+    const total = countTotalFeedback(stats);
+    const percentGood = countPositiveFeedbackPercentage(stats, total);
     return [
       ...stats,
       { label: "Total", count: total },
@@ -29,11 +36,11 @@ class App extends Component {
     ];
   };
 
-  countTotalFeedback = (stats) => {
+  const countTotalFeedback = (stats) => {
     return stats.reduce((total, item) => (total += item.count), 0);
   };
 
-  countPositiveFeedbackPercentage = (stats, total) => {
+  const countPositiveFeedbackPercentage = (stats, total) => {
     const totalGood = stats.reduce(
       (total, item) => (item.label === "good" ? (total += item.count) : total),
       0
@@ -41,41 +48,36 @@ class App extends Component {
     return total > 0 ? String(Math.round((totalGood / total) * 100)) + "%" : "";
   };
 
-  render() {
-    const { good, neutral, bad } = this.state;
-    const stats = [
-      {
-        label: "good",
-        count: good,
-      },
-      {
-        label: "neutral",
-        count: neutral,
-      },
-      {
-        label: "bad",
-        count: bad,
-      },
-    ];
-    const extendedStats = this.makeExtendedStats(stats);
-    return (
-      <Fragment>
-        <h1>Please leave feedback</h1>
-        <Section>
-          <Controls
-            options={["good", "neutral", "bad"]}
-            onClick={this.changeState}
-          />
+  const stats = [
+    {
+      label: "good",
+      count: good,
+    },
+    {
+      label: "neutral",
+      count: neutral,
+    },
+    {
+      label: "bad",
+      count: bad,
+    },
+  ];
+  const extendedStats = makeExtendedStats(stats);
+  return (
+    <Fragment>
+      <h1>Please leave feedback</h1>
+      <Section>
+        <Controls options={["good", "neutral", "bad"]} onClick={changeState} />
+      </Section>
+      {countTotalFeedback(stats) ? (
+        <Section type="statistics" title="Statistics">
+          <Statistics stats={extendedStats} />
         </Section>
-        {this.countTotalFeedback(stats) ? (
-          <Section type="statistics" title="Statistics">
-            <Statistics stats={extendedStats} />
-          </Section>
-        ) : (
-          <Notification message="There is no feedback" />
-        )}
-      </Fragment>
-    );
-  }
+      ) : (
+        <Notification message="There is no feedback" />
+      )}
+    </Fragment>
+  );
 }
+
 export default App;

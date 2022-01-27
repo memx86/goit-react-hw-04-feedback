@@ -19,7 +19,7 @@ function Controls({ options, onClick }) {
   );
 }
 Controls.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
   onClick: PropTypes.func.isRequired,
 };
 

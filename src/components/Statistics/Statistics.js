@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import PropTypes from "prop-types";
 import s from "./Statistics.module.css";
 
-function Statistics({ title, stats }) {
+function Statistics({ stats }) {
   return (
     <Fragment>
       <ul className={s.list}>
@@ -20,7 +20,12 @@ function Statistics({ title, stats }) {
   );
 }
 Statistics.propTypes = {
-  title: PropTypes.string,
-  stats: PropTypes.array.isRequired,
+  stats: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      count: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+    })
+  ).isRequired,
 };
 export default Statistics;

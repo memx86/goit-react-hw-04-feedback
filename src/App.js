@@ -4,26 +4,40 @@ import Controls from "components/Controls";
 import Statistics from "components/Statistics";
 import Notification from "components/Notification";
 
+const LABELS = {
+  GOOD: "good",
+  NEUTRAL: "neutral",
+  BAD: "bad",
+};
+const TYPE = {
+  SETSTATE: "setState",
+};
+
 function App() {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const changeState = (e) => {
-    const key = e.target.dataset.value;
+  const handleSwitch = (key, type) => {
+    const set = type === TYPE.SETSTATE;
     switch (key) {
-      case "good":
-        setGood(good + 1);
-        return;
-      case "neutral":
-        setNeutral(neutral + 1);
-        return;
-      case "bad":
-        setBad(bad + 1);
-        return;
+      case LABELS.GOOD:
+        set && setGood(good + 1);
+        return good;
+      case LABELS.NEUTRAL:
+        set && setNeutral(neutral + 1);
+        return neutral;
+      case LABELS.BAD:
+        set && setBad(bad + 1);
+        return bad;
       default:
         return;
     }
+  };
+
+  const changeState = (e) => {
+    const key = e.target.dataset.value;
+    handleSwitch(key, TYPE.SETSTATE);
   };
 
   const makeExtendedStats = (stats) => {
@@ -42,32 +56,25 @@ function App() {
 
   const countPositiveFeedbackPercentage = (stats, total) => {
     const totalGood = stats.reduce(
-      (total, item) => (item.label === "good" ? (total += item.count) : total),
+      (total, item) =>
+        item.label === LABELS.GOOD ? (total += item.count) : total,
       0
     );
     return total > 0 ? String(Math.round((totalGood / total) * 100)) + "%" : "";
   };
 
-  const stats = [
-    {
-      label: "good",
-      count: good,
-    },
-    {
-      label: "neutral",
-      count: neutral,
-    },
-    {
-      label: "bad",
-      count: bad,
-    },
-  ];
+  const stats = Object.values(LABELS).map((item) => {
+    const count = handleSwitch(item);
+    return { label: item, count };
+  });
+
   const extendedStats = makeExtendedStats(stats);
+
   return (
     <Fragment>
       <h1>Please leave feedback</h1>
       <Section>
-        <Controls options={["good", "neutral", "bad"]} onClick={changeState} />
+        <Controls options={Object.values(LABELS)} onClick={changeState} />
       </Section>
       {countTotalFeedback(stats) ? (
         <Section type="statistics" title="Statistics">
